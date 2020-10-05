@@ -1,0 +1,84 @@
+<html>
+    <head>
+        <meta charset="utf-8" />
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <title>Database</title>
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+        <script type = "text/javascript">
+            $(document).ready(function () {
+                var users = {};
+                getAllUsers();
+                $('#btnAddUsers').click(function () {
+                    users.Name = $('#txtName').val();
+                    users.Age = $('#txtAge').val();
+                    users.Email = $('#txtEmail').val();
+                    var usersObj = JSON.stringify(users);
+                    $.ajax({
+                        url: 'http://localhost:3000/api/users',
+                        method: 'POST',
+                        data: usersObj,
+                        contentType: 'application/json; charset=utf-8',
+                        success: function () {
+                            alert('Saved successfully!');
+                            getAllUsers();
+                        },
+                        error: function (error) {
+                            alert(error);
+                        }
+                    })
+                    
+                })
+            });
+            
+            function getAllUsers() {
+                $.ajax({
+                    url: 'http://localhost:3000/api/users',
+                    method: 'GET',
+                    dataType: 'json',
+                    success: function (data) {
+                        var tableBody = $('#tblUsers tbody');
+                        tableBody.empty();
+                        $(data).each(function (index, element) {
+                            tableBody.append('<tr><td>'+element.name+'</td><td>'+element.age+'</td><td>'+element.email+'</td></tr>');
+                        })
+                    },
+                    error: function (error) {
+                        alert(error);
+                    }
+                });
+            }
+        </script>
+    </head>
+    <body>
+        <table border="1" style="border-collapse:collapse">
+            <tr>
+                <td>Name</td>
+                <td><input id="txtName" type="text" /></td>
+            </tr>
+            <tr>
+                <td>Age</td>
+                <td><input id="txtAge" type="number" /></td>
+            </tr>
+            <tr>
+                <td>Email</td>
+                <td><input id="txtEmail" type="text" /></td>
+            </tr>
+            <tr>
+                <td colspan="2">
+                    <input type="button" id="btnAddUsers" value="Add User" />
+                </td>
+            </tr>
+        </table>
+        <table id="tblUsers" border="1" style="border-collapse:collapse">
+            <thead>
+                <tr>
+                    <th>Name</th>
+                    <th>Age</th>
+                    <th>Email</th>
+                </tr>
+            </thead>
+            <tbody></tbody>
+        </table>
+    </body>
+</html>
